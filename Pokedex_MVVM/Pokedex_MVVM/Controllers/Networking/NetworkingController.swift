@@ -22,29 +22,6 @@ class NetworkingController {
         return initalURL
     }
     
-    static func fetchPokedex(with url: URL, completion: @escaping(Result<Pokedex, NetworkError>) -> Void) {
-        
-        URLSession.shared.dataTask(with: url) { dTaskData, _, error in
-            if let error = error {
-                print("Encountered error: \(error.localizedDescription)")
-                completion(.failure(.badURL))
-            }
-            
-            guard let pokemonData = dTaskData else {
-                completion(.failure(.couldNotUnwrap))
-                return
-            }
-            
-            do {
-                let pokedex =  try JSONDecoder().decode(Pokedex.self, from: pokemonData)
-                completion(.success(pokedex))
-            } catch {
-                print("Encountered error when decoding the data:", error.localizedDescription)
-                completion(.failure(.errorDecoding))
-            }
-        }.resume()
-    }
-    
     static func fetchPokemon(with urlString: String, completion: @escaping (Result<Pokemon, NetworkError>) -> Void) {
         guard let pokemonURL = URL(string: urlString) else {return}
         URLSession.shared.dataTask(with: pokemonURL) { dTaskData, _, error in
